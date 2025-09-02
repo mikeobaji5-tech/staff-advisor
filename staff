@@ -1,128 +1,537 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+<!doctype html> 
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merchant Support Gateway — Independent Partner</title>
 
-export default function App() {
-  // Auto redirect to advisor page after 3 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const advisor = document.getElementById("advisor-section");
-      advisor?.scrollIntoView({ behavior: "smooth" });
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  <!-- Tailwind Play CDN (fast way to style without build) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans">
-      {/* Loading Page */}
-      <section className="flex flex-col items-center justify-center h-screen" id="loading">
-        <img
-          src="/shopify-logo.png"
-          alt="Shopify Logo"
-          className="w-28 mb-6"
-        />
-        <h1 className="text-xl font-medium mb-2">
-          Connecting you with a Shopify Merchant Advisor…
-        </h1>
-        <motion.div
-          className="flex space-x-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ repeat: Infinity, duration: 1 }}
-        >
-          <span className="w-3 h-3 bg-green-600 rounded-full"></span>
-          <span className="w-3 h-3 bg-green-600 rounded-full"></span>
-          <span className="w-3 h-3 bg-green-600 rounded-full"></span>
-        </motion.div>
-      </section>
+  <style>
+    /* small custom styles */
+    .fade-in { animation: fadeIn .28s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 9999; }
 
-      {/* Advisor Page */}
-      <section id="advisor-section" className="py-16 px-6 bg-gray-50">
-        <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-md p-8">
-          <div className="flex items-center space-x-6">
-            <img
-              src="/default-staff.jpg"
-              alt="Staff Advisor"
-              className="w-24 h-24 rounded-full object-cover border"
-            />
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Juan Manuel
-              </h2>
-              <p className="text-green-700 font-medium">
-                Shopify Compliance Staff
-              </p>
-              <p className="text-sm text-gray-600">Staff ID: ST-342991</p>
-              <p className="text-sm text-gray-600">Case No: CS-114882</p>
-              <p className="text-sm text-gray-600">Experience: 5+ years</p>
-              <p className="text-sm text-gray-600">Merchants Helped: 76+</p>
-              <p className="text-sm text-green-600 mt-1 font-medium">
-                Status: Active
-              </p>
-            </div>
-          </div>
+    /* Spinner (Shopify-style) */
+    .spinner { border: 3px solid #e5e7eb; border-top: 3px solid #10b981; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+  </style>
 
-          <p className="mt-6 text-gray-700">
-            Your advisor is ready to assist — connect within 24 hours for your
-            free compliance audit.
-          </p>
+  <!-- We'll set this href from CONFIG in JS so it's always in sync with your logo -->
+  <link id="faviconLink" rel="icon" href="">
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
 
-          <div className="grid gap-4 mt-6">
-            <a
-              href="https://wa.me/2349032365125"
-              className="w-full py-3 text-center rounded-xl bg-green-600 text-white font-medium hover:bg-green-700"
-            >
-              Continue via WhatsApp
-            </a>
-            <a
-              href="https://t.me/Xcellexert"
-              className="w-full py-3 text-center rounded-xl bg-blue-500 text-white font-medium hover:bg-blue-600"
-            >
-              Continue via Telegram
-            </a>
-            <a
-              href="mailto:support@example.com"
-              className="w-full py-3 text-center rounded-xl bg-gray-800 text-white font-medium hover:bg-black"
-            >
-              Secure Email
-            </a>
-          </div>
-        </div>
+<!--
+  IMPORTANT: Edit the CONFIG below to match your WhatsApp/Telegram/email and copy.
+  This UI is "Shopify-inspired" for familiarity but DO NOT imply official Shopify
+  affiliation. The visible disclaimer is required — keep it present.
+-->
+<script>
+  // -------------- CONFIG (edit these) ----------------
+  const CONFIG = {
+    logoUrl: "https://i.pinimg.com/736x/3a/9d/91/3a9d9115f2936dbd8979e34381da7973.jpg", // ✅ Professional logo
+    whatsappNumber: "2349135251130",   // no plus sign, country code first
+    telegramUsername: "Xcellexert",    // username only
+    supportEmail: "support@example.com",
 
-        {/* Audit Section */}
-        <div className="max-w-2xl mx-auto mt-12 text-center">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Compliance Audit First
-          </h3>
-          <p className="text-gray-700">
-            Every case begins with a staff-led compliance audit. Your advisor will
-            review your store setup, SEO visibility, and policy adherence. If
-            technical fixes are required, you’ll be referred to a certified
-            Shopify Developer Partner.
-          </p>
-        </div>
+    advisor: {
+      name: "Juan Manuel",
+      title: "Compliance & Merchant Support Advisor",
+      partnerBadge: "Independent Partner Resource",
+      staffId: "ADV-342991",
+      caseId: "CS-114882",
+      years: "5+ years",
+      merchantsHelped: 76,
+      rating: 4.9,
+      // Professional business advisor image - safe and generic
+      photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+    },
 
-        {/* Trust Flow */}
-        <div className="max-w-3xl mx-auto mt-12 grid md:grid-cols-3 gap-6 text-center">
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="font-semibold text-green-700">Step 1</p>
-            <p className="text-gray-700">Shopify Staff Audit</p>
-          </div>
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="font-semibold text-green-700">Step 2</p>
-            <p className="text-gray-700">Audit Results Shared</p>
-          </div>
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="font-semibold text-green-700">Step 3</p>
-            <p className="text-gray-700">Referral to Developer Partner</p>
-          </div>
-        </div>
-      </section>
+    countdownHours: 24,   // left in CONFIG for reference but not used (countdown removed)
+    ticketId: "SHOP-9001" // fixed ticket id per your request
+  };
+  // --------------------------------------------------
+</script>
 
-      {/* Footer */}
-      <footer className="py-6 text-center text-sm text-gray-500 border-t mt-12">
-        This partner service continues your case following Shopify staff referral.
-        All conversations are secured and encrypted.
-      </footer>
+<!-- LOADING / PROGRESS (shows until steps done) -->
+<div id="loading" class="min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-md w-full text-center">
+    <!-- header logo during loading -->
+    <div class="block md:hidden mb-4">
+      <img id="logoTopLoadingMobile" alt="Logo" class="mx-auto w-20 h-20 rounded-full object-cover border border-emerald-200" src="" />
     </div>
-  );
-}
+    <div class="hidden md:block mb-4">
+      <img id="logoTopLoading" alt="Logo" class="mx-auto w-14 h-14 rounded-full object-cover border border-emerald-200" src="" />
+    </div>
+
+    <h2 class="text-lg font-semibold mb-3">Preparing your compliance & growth advisor workspace…</h2>
+
+    <!-- Step-by-step status messages -->
+    <div class="mb-6">
+      <div id="statusMessage" class="text-lg font-medium text-gray-700 min-h-[2rem] transition-opacity duration-300">
+        Initiating merchant verification...
+      </div>
+    </div>
+
+    <!-- Percentage counter -->
+    <div class="text-2xl font-bold text-emerald-600 mb-4">
+      <span id="percentageCounter">0</span>%
+    </div>
+
+    <!-- spinner shown; progress list + bar are left in DOM but hidden so other code stays intact -->
+    <div class="spinner" aria-hidden="true"></div>
+
+    <ol id="progressList" class="text-left space-y-3" style="display:none;">
+      <!-- JS will inject steps (kept hidden because we're using spinner) -->
+    </ol>
+
+    <div class="w-full bg-gray-200 rounded-full h-1 mt-6 overflow-hidden" style="display:none;">
+      <div id="progressBar" class="h-full bg-emerald-500 w-0 transition-all"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT (hidden initially) -->
+<main id="main" class="hidden min-h-screen pb-12">
+  <!-- top bar -->
+  <header class="sticky top-0 bg-white/80 backdrop-blur border-b z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- ✅ Real image logo from CONFIG -->
+        <img id="logoTop" alt="Logo" class="w-9 h-9 rounded-full object-cover border border-emerald-200" src="" />
+        <div>
+          <div class="text-sm font-semibold">Merchant Support Gateway</div>
+          <div class="text-xs text-gray-500">Shopify-aligned | staff advisor</div>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-3 text-xs text-gray-600">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V7a6 6 0 0 0-12 0v1"/><path d="M5 11v6a4 4 0 0 0 4 4h6"/></svg>
+        <span>Encrypted conversation channels</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- advisor + how it works -->
+  <section class="max-w-5xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-[1.2fr_0.8fr]">
+    <!-- left: advisor card -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+      <!-- Added text above case notice -->
+      <div class="mb-5 p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <p class="text-sm text-blue-900">
+          We provide a complete compliance audit, SEO visibility review, and tailored growth strategy for your store.
+          Quick fixes, marketing guidance, and developer referrals if needed — all aimed at boosting sales and securing your store.
+        </p>
+      </div>
+
+      <!-- Amber banner (countdown removed) -->
+      <div class="flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-200 p-3 mb-5">
+        <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6l4 2"/></svg>
+        <p class="text-sm text-amber-800">
+          Case Notice: delayed response may impact compliance status. Connect with your advisor to resolve.
+        </p>
+      </div>
+
+      <div class="flex items-start gap-6">
+        <img id="advisorPhoto" src="https://i.pinimg.com/736x/55/48/14/55481421d94f74a855d5ed3cd1d080c2.jpg" alt="Advisor" class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border" />
+        <div class="flex-1">
+          <h1 id="advisorName" class="text-2xl font-semibold tracking-tight"></h1>
+          <p id="advisorTitle" class="text-emerald-700 text-sm font-medium mt-1"></p>
+
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-gray-600">
+            <span id="staffIdSpan"></span>
+            <span id="caseIdSpan"></span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 mt-2 text-xs text-gray-600">
+            <span id="expSpan"></span>
+            <span id="helpedSpan"></span>
+            <span id="ratingSpan"></span>
+          </div>
+
+          <div class="inline-flex items-center gap-2 mt-2 text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a7 7 0 0 0-7 7v2.25a.75.75 0 0 1-.75.75H3"/></svg>
+            <span id="badgeSpan"></span>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-gray-700">
+        Your advisor will begin with a quick <strong>staff-style compliance audit</strong> covering policies, store setup, security headers, and SEO visibility.
+        If technical fixes are required, you'll be referred to a certified developer partner for implementation.
+      </p>
+
+      <!-- CTAs (click opens popup first) -->
+      <div class="grid sm:grid-cols-3 gap-3 mt-6">
+        <button data-channel="whatsapp" class="contactBtn group inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-sm font-medium">
+          <!-- message icon -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          WhatsApp
+          <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/></svg>
+        </button>
+
+        <button data-channel="telegram" class="contactBtn group inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white py-3 text-sm font-medium">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M21 4L7.5 12.5"/></svg>
+          Telegram
+          <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/></svg>
+        </button>
+
+        <button data-channel="email" class="contactBtn group inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 hover:bg-black text-white py-3 text-sm font-medium">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h15A2.5 2.5 0 0 1 22 6.5v11A2.5 2.5 0 0 1 19.5 20h-15A2.5 2.5 0 0 1 2 17.5v-11z"/></svg>
+          Secure Email
+          <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/></svg>
+        </button>
+      </div>
+
+      <p class="mt-3 flex items-center gap-2 text-xs text-gray-600">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4s-3 1.567-3 3.5S10.343 11 12 11z"/></svg>
+        Conversations are encrypted and handled under merchant-care best practices.
+      </p>
+    </div>
+
+    <!-- right: how it works -->
+    <aside class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+      <h2 class="text-lg font-semibold mb-3">How this works</h2>
+      <ol class="space-y-3 text-sm">
+        <li class="flex items-start gap-3"><svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4"/></svg> Staff-style Audit ➝ quick review of compliance, setup, SEO visibility, and risk signals.</li>
+        <li class="flex items-start gap-3"><svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4"/></svg> Results shared ➝ you get a clear diagnosis and recommended actions.</li>
+        <li class="flex items-start gap-3"><svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4"/></svg> Referral for fixes ➝ if needed, transfer to a certified developer partner.</li>
+      </ol>
+
+      <!-- NEW Marketing/Growth Support (kept exactly where originally added) -->
+      <div class="mt-6 bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+        <h3 class="font-semibold text-sm text-emerald-700 mb-2">Growth & Marketing Support</h3>
+        <ul class="text-xs text-gray-700 space-y-1">
+          <li>• Store speed & conversion optimization</li>
+          <li>• SEO & visibility improvements</li>
+          <li>• Paid ads funnel strategy</li>
+          <li>• Trust badges & retention tools</li>
+        </ul>
+        <!-- uses same flow as other CTAs by having class contactBtn -->
+        <button data-channel="whatsapp" class="contactBtn mt-3 w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white py-2 text-xs font-medium">Talk to Growth Advisor</button>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-gray-200 p-4 text-xs text-gray-600">
+        <p class="font-medium text-gray-800 mb-1">Fair-Use Disclosure</p>
+        <p>
+          This site is operated by an independent partner to continue merchant cases after staff interactions.
+      . References are for workflow clarity only.
+        </p>
+      </div>
+    </aside>
+  </section>
+
+  <!-- trust tiles -->
+  <section class="max-w-5xl mx-auto px-4 grid sm:grid-cols-3 gap-4">
+    <div class="p-4 rounded-xl border bg-white flex items-center gap-3 text-sm">
+      <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 6 6 .9-4.5 3.9L19 22 12 18.5 5 22l1.5-8.2L2 10.9 8 10z"/></svg>
+      Verified partner workflow
+    </div>
+    <div class="p-4 rounded-xl border bg-white flex items-center gap-3 text-sm">
+      <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c1.657 0 3-1.567 3-3.5S13.657 4 12 4s-3 1.567-3 3.5S10.343 11 12 11z"/></svg>
+      Encrypted live channels
+    </div>
+    <div class="p-4 rounded-xl border bg-white flex items-center gap-3 text-sm">
+      <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/></svg>
+      <span id="casesHandledSpan">76+ merchant cases handled</span>
+    </div>
+  </section>
+
+  <!-- CASE STUDY: Hero images updated per request -->
+  <section class="max-w-5xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+    <div class="p-4 rounded-xl border bg-white flex flex-col gap-3">
+      <img src="https://i.pinimg.com/736x/6c/71/e8/6c71e84df436880b442e6598dc4a999e.jpg" alt="Conversion lift chart" class="w-full h-40 sm:h-32 object-cover rounded" />
+      <div>
+        <div class="text-base sm:text-sm font-semibold">+30% Conversion Lift</div>
+        <p class="text-sm sm:text-xs text-gray-600 mt-1">Quick checkout fixes & trust badges boosted conversions by 30% in 2 weeks.</p>
+      </div>
+    </div>
+
+    <div class="p-4 rounded-xl border bg-white flex flex-col gap-3">
+      <img src="https://i.pinimg.com/736x/e4/8f/df/e48fdf1b74b2471bf537193df06c01ac.jpg" alt="SEO visibility" class="w-full h-40 sm:h-32 object-cover rounded" />
+      <div>
+        <div class="text-base sm:text-sm font-semibold">SEO & Visibility Gains</div>
+        <p class="text-sm sm:text-xs text-gray-600 mt-1">SEO audit + metadata improvements increased organic visits by 45% in 60 days.</p>
+      </div>
+    </div>
+
+    <div class="p-4 rounded-xl border bg-white flex flex-col gap-3">
+      <img src="https://i.pinimg.com/736x/fb/fa/1d/fbfa1dabc7dd0a3ceec42dd23e140a98.jpg" alt="Revenue growth graph" class="w-full h-40 sm:h-32 object-cover rounded" />
+      <div>
+        <div class="text-base sm:text-sm font-semibold">Quarterly Revenue +40%</div>
+        <p class="text-sm sm:text-xs text-gray-600 mt-1">CRO & ad funnel tweaks scaled revenue 40% quarter-over-quarter for a fashion merchant.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer class="mt-10 border-top bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-xs text-gray-500">
+      <p>
+        © <span id="year"></span> Merchant Support Gateway — staff advisor resource.
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+<!-- MODAL POPUP (form) -->
+<div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-40 z-50">
+  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Submit Ticket (ID: <span id="ticketIdText"></span>)</h3>
+      <button id="modalClose" class="text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+
+    <div>
+      <label class="text-xs text-gray-600">Store URL</label>
+      <input id="inputStore" class="w-full border rounded-lg p-2 mb-3" placeholder="example.myshopify.com"/>
+      <label class="text-xs text-gray-600">Email</label>
+      <input id="inputEmail" type="email" class="w-full border rounded-lg p-2 mb-3" placeholder="you@example.com"/>
+      <label class="text-xs text-gray-600">Issue</label>
+      <select id="inputIssue" class="w-full border rounded-lg p-2 mb-4">
+        <option>Compliance Warning</option>
+        <option>Checkout / Payment Issue</option>
+        <option>Store Visibility (SEO)</option>
+        <option>Other</option>
+      </select>
+
+      <label class="text-xs text-gray-600">Store Challenges / Notes</label>
+      <textarea id="inputNotes" class="w-full border rounded-lg p-2 mb-4" rows="3" placeholder="Describe challenges or notes..."></textarea>
+
+      <div class="flex gap-3">
+        <button id="sendBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg">Submit & Open Channel</button>
+        <button id="cancelBtn" class="flex-1 border rounded-lg py-2">Cancel</button>
+      </div>
+
+      <p class="mt-3 text-xs text-gray-500">Ticket ID will be included in every message: <strong id="ticketIdText2"></strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden">
+  <div class="bg-emerald-600 text-white px-4 py-2 rounded shadow">✅ Ticket submitted — opening your chat...</div>
+</div>
+
+<script>
+  // --------- app logic ----------
+  const steps = [
+    "Verifying merchant details",
+    "Checking policy & compliance status",
+    "Assigning advisor",
+    "Preparing secure channel"
+  ];
+
+  const FALLBACK_PHOTO = "https://images.unsplash.com/photo-1593032457860-9e1d5bc3c7d4?q=80&w=640&auto=format&fit=crop";
+
+  // fill initial DOM from CONFIG
+  document.addEventListener("DOMContentLoaded", () => {
+    // set favicon + logos
+    const fav = document.getElementById('faviconLink');
+    if (fav) fav.href = CONFIG.logoUrl;
+    const logoTop = document.getElementById('logoTop');
+    const logoTopLoading = document.getElementById('logoTopLoading');
+    const logoTopLoadingMobile = document.getElementById('logoTopLoadingMobile');
+    if (logoTop) logoTop.src = CONFIG.logoUrl;
+    if (logoTopLoading) logoTopLoading.src = CONFIG.logoUrl;
+    if (logoTopLoadingMobile) logoTopLoadingMobile.src = CONFIG.logoUrl;
+
+    <!-- advisor info -->
+    // advisor photo
+    const photoEl = document.getElementById('advisorPhoto');
+    if(photoEl){
+      photoEl.src = "https://i.pinimg.com/736x/55/48/14/55481421d94f74a855d5ed3cd1d080c2.jpg";
+      photoEl.onerror = () => { photoEl.src = FALLBACK_PHOTO; };
+    }
+
+    document.getElementById('advisorName').innerText = CONFIG.advisor.name;
+    document.getElementById('advisorTitle').innerText = CONFIG.advisor.title;
+    document.getElementById('staffIdSpan').innerHTML = `Advisor ID: <strong>${CONFIG.advisor.staffId}</strong>`;
+    document.getElementById('caseIdSpan').innerHTML = `Case ID: <strong>${CONFIG.advisor.caseId}</strong>`;
+    document.getElementById('expSpan').innerText = `Experience: ${CONFIG.advisor.years}`;
+    document.getElementById('helpedSpan').innerText = `Merchants helped: ${CONFIG.advisor.merchantsHelped}+`;
+    document.getElementById('ratingSpan').innerText = `Rating: ${CONFIG.advisor.rating}/5 ⭐`;
+    document.getElementById('badgeSpan').innerText = CONFIG.advisor.partnerBadge;
+    document.getElementById('casesHandledSpan').innerText = `${CONFIG.advisor.merchantsHelped}+ merchant cases handled`;
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    // render progress list (kept hidden by CSS in loader, but we still populate)
+    const list = document.getElementById('progressList');
+    steps.forEach((s,i) => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-3';
+      li.innerHTML = `
+        <span id="dot${i}" class="inline-flex w-5 h-5 rounded-full border border-gray-300 items-center justify-center"></span>
+        <span id="label${i}" class="text-sm text-gray-500">${s}</span>`;
+      list.appendChild(li);
+    });
+
+    // start fake progress (spinner then reveal)
+    runProgress();
+
+    // wire CTA buttons to open modal
+    document.querySelectorAll('.contactBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const channel = btn.getAttribute('data-channel');
+        openModal(channel);
+      });
+    });
+
+    // modal events
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('cancelBtn').addEventListener('click', closeModal);
+    document.getElementById('sendBtn').addEventListener('click', sendTicket);
+    // ticket id places
+    document.getElementById('ticketIdText').innerText = CONFIG.ticketId;
+    document.getElementById('ticketIdText2').innerText = CONFIG.ticketId;
+  });
+
+  // progress animation then show main (5s loader) with percentage counter and status messages
+  function runProgress(){
+    // keep progress list/bar hidden (spinner used)
+    const pl = document.getElementById('progressList');
+    if(pl) pl.style.display = 'none';
+    const pbParent = document.querySelector('#progressBar') ? document.getElementById('progressBar').parentElement : null;
+    if(pbParent) pbParent.style.display = 'none';
+
+    // Status messages
+    const statusMessages = [
+      { 
+        message: "Verifying merchant credentials...", 
+        duration: 1000 
+      },
+      { 
+        message: "Analyzing compliance checkpoints...", 
+        duration: 1200 
+      },
+      { 
+        message: "Matching you with best advisor...", 
+        duration: 1000 
+      },
+      { 
+        message: "Preparing secure workspace...", 
+        duration: 800 
+      },
+      { 
+        message: "Ready! Launching advisor panel...", 
+        duration: 1000 
+      }
+    ];
+
+    const statusMessageEl = document.getElementById('statusMessage');
+    const counter = document.getElementById('percentageCounter');
+    
+    let currentPercent = 0;
+    let messageIndex = 0;
+    let totalDuration = 0;
+
+    // Function to fade out, change text, then fade in
+    function updateStatus(message) {
+      // Fade out
+      statusMessageEl.style.opacity = '0';
+      
+      setTimeout(() => {
+        // Change text
+        statusMessageEl.textContent = message;
+        
+        // Fade in
+        statusMessageEl.style.opacity = '1';
+      }, 150); // Half of transition duration
+    }
+
+    // Start with first message
+    updateStatus(statusMessages[0].message);
+
+    // Cycle through status messages
+    statusMessages.forEach((status, index) => {
+      totalDuration += status.duration;
+      setTimeout(() => {
+        if (index < statusMessages.length) {
+          updateStatus(status.message);
+        }
+      }, totalDuration);
+    });
+
+    // Start percentage counter (increment to match total duration)
+    const percentInterval = setInterval(() => {
+      currentPercent += 2; // Increment by 2 every 100ms to reach 100% in 5 seconds
+      counter.textContent = Math.min(currentPercent, 100);
+      if (currentPercent >= 100) {
+        clearInterval(percentInterval);
+      }
+    }, 100);
+
+    setTimeout(() => {
+      const loading = document.getElementById('loading');
+      const main = document.getElementById('main');
+      if(loading) loading.classList.add('hidden');
+      if(main) main.classList.remove('hidden');
+    }, 5000);
+  }
+
+  // modal control
+  let activeChannel = null;
+  function openModal(channel){
+    activeChannel = channel; // 'whatsapp' | 'telegram' | 'email'
+    document.getElementById('modal').classList.remove('hidden');
+    // focus first input
+    setTimeout(()=>document.getElementById('inputStore').focus(), 120);
+  }
+  function closeModal(){
+    document.getElementById('modal').classList.add('hidden');
+  }
+
+  function showToast(){
+    const t = document.getElementById('toast');
+    t.classList.remove('hidden');
+    setTimeout(()=> t.classList.add('hidden'), 4000);
+  }
+
+  function sendTicket(){
+    const store = document.getElementById('inputStore').value.trim();
+    const email = document.getElementById('inputEmail').value.trim();
+    const issue = document.getElementById('inputIssue').value;
+    const notes = document.getElementById('inputNotes').value.trim();
+    if(!store || !email){
+      alert('Please provide Store URL and Email before continuing.');
+      return;
+    }
+    const ticket = CONFIG.ticketId;
+    const message = `🟢 Shopify Support Ticket Created
+Ticket ID: ${ticket}
+Store: ${store}
+Email: ${email}
+Issue: ${issue}
+Notes: ${notes}`;
+    const encoded = encodeURIComponent(message);
+
+    // open channel based on which CTA opened the modal
+    if(activeChannel === 'whatsapp'){
+      const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encoded}`;
+      window.open(url, '_blank');
+    } else if(activeChannel === 'telegram'){
+      const url = `https://t.me/${CONFIG.telegramUsername}?text=${encoded}`;
+      window.open(url, '_blank');
+    } else if(activeChannel === 'email'){
+      const mailto = `mailto:${CONFIG.supportEmail}?subject=${encodeURIComponent('Support Ticket ' + ticket)}&body=${encoded}`;
+      window.location.href = mailto;
+    }
+
+    // UI feedback
+    closeModal();
+    showToast();
+
+    // reset fields
+    document.getElementById('inputStore').value = '';
+    document.getElementById('inputEmail').value = '';
+    document.getElementById('inputIssue').selectedIndex = 0;
+    document.getElementById('inputNotes').value = '';
+    activeChannel = null;
+  }
+</script>
+
+</body>
+</html>

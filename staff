@@ -35,7 +35,7 @@
     logoUrl: "https://i.pinimg.com/736x/3a/9d/91/3a9d9115f2936dbd8979e34381da7973.jpg", // ✅ Professional logo
     whatsappNumber: "2349135251130",   // no plus sign, country code first
     telegramUsername: "Xcellexert",    // username only
-    supportEmail: "support@example.com",
+    supportEmail: "xcellexpert.storeagent@gmail.com",
 
     advisor: {
       name: "Juan Manuel",
@@ -47,7 +47,7 @@
       merchantsHelped: 76,
       rating: 4.9,
       // Professional business advisor image - safe and generic
-      photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+      photoUrl: "https://i.pinimg.com/736x/55/48/14/55481421d94f74a855d5ed3cd1d080c2.jpg"
     },
 
     countdownHours: 24,   // left in CONFIG for reference but not used (countdown removed)
